@@ -1,0 +1,11 @@
+# directory
+.idea
+dist
+*.egg-info
+.cache
+test
+__pycache__
+
+# python file
+test.py
+demo.py
