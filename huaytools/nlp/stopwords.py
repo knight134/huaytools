@@ -2,7 +2,7 @@
 stop words collections
 """
 import os
-from .corpus import load_stopwords
+from . import load_stopwords
 
 base_path = os.path.join(os.path.dirname(__file__), "data")
 
@@ -64,7 +64,6 @@ You can get the original file as bellow:
     stopwords_en = stopwords.words('english')
     ```
 """
-
 
 if __name__ == '__main__':
     """"""
