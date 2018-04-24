@@ -22,7 +22,7 @@ package_data = {'huaytools.nlp': ['data/*']}
 
 setup(
     name="huaytools",
-    version="0.2.11",
+    version="0.3.0",
     keywords=("huay", "huaytools"),
     description="huay's tools",
     long_description="huay's tools",
