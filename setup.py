@@ -7,6 +7,8 @@
 from setuptools import setup, find_packages
 import pkg_resources
 
+version = "0.3.1"
+
 install_requires = [
     'six',
     'bs4',
@@ -22,7 +24,7 @@ package_data = {'huaytools.nlp': ['data/*']}
 
 setup(
     name="huaytools",
-    version="0.3.0",
+    version=version,
     keywords=("huay", "huaytools"),
     description="huay's tools",
     long_description="huay's tools",

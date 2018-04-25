@@ -13,13 +13,13 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def load_word2vec(wv_model_path, bin_format=False):
+def load_word2vec(wv_model_path, binary=False):
     """
     使用 gensim 加载 Word2Vec 模型
 
     Args:
         wv_model_path(str): 词向量模型路径
-        bin_format(bool): 词向量模型的类型；
+        binary(bool): 词向量模型的类型；
             若为 True，则为 gensim 保存的二进制格式；反之为原始 C word2vec-tool 生成的格式
 
         原始 C word2vec-tool 生成的格式为：
@@ -31,7 +31,7 @@ def load_word2vec(wv_model_path, bin_format=False):
     """
     logger.info("loading the Word2Vec model...")
 
-    if bin_format:
+    if not binary:
         from gensim.models import KeyedVectors
         wv_model = KeyedVectors.load_word2vec_format(wv_model_path)
     else:
@@ -59,7 +59,7 @@ def load_fasttext(model_path):
     return model
 
 
-def extract_embeddings(wv_model_path, words, save_path=None, bin_format=False):
+def extract_embeddings(wv_model_path, words, save_path=None, binary=False):
     """
     从 wv_model 中抽取 words 的词向量
 
@@ -67,7 +67,7 @@ def extract_embeddings(wv_model_path, words, save_path=None, bin_format=False):
         wv_model_path(str): 预训练的词向量模型路径
         words(list): 待抽取词向量的单词
         save_path(str): 文件保存路径
-        bin_format(bool): 词向量模型的类型
+        binary(bool): 词向量模型的类型
 
     Examples:
         >>> wv_model_path = r""
@@ -77,7 +77,7 @@ def extract_embeddings(wv_model_path, words, save_path=None, bin_format=False):
     Returns:
 
     """
-    wv_model = load_word2vec(wv_model_path, bin_format=bin_format)
+    wv_model = load_word2vec(wv_model_path, binary=binary)
 
     embeddings = []
     id2word = dict()
@@ -103,7 +103,7 @@ def extract_embeddings(wv_model_path, words, save_path=None, bin_format=False):
     return embeddings, id2word, word2id
 
 
-def build_vocab_from_word2vec(wv_model_path, save_path=None, save_embeddings=False, bin_format=False, zero_start=False):
+def build_vocab_from_word2vec(wv_model_path, save_path=None, save_embeddings=False, binary=False, zero_start=True):
     """
     从训练好的词向量模型中构建词汇集
 
@@ -111,7 +111,7 @@ def build_vocab_from_word2vec(wv_model_path, save_path=None, save_embeddings=Fal
         wv_model_path(str): 预训练的词向量模型路径
         save_path(str): 文件保存路径
         save_embeddings(bool): 是否保存 embeddings，默认不保存
-        bin_format(bool): 词向量模型的类型
+        binary(bool): 词向量模型的类型
         zero_start(bool): id2word 是否从 0 开始
             若从 0 开始，即不留位置给未登录词，未登录需要在传入模型前处理
             若从 1 开始，则 0 的位置留给未登录词，所有未登录词将被映射到 id == 0；
@@ -120,7 +120,7 @@ def build_vocab_from_word2vec(wv_model_path, save_path=None, save_embeddings=Fal
     Returns:
 
     """
-    wv_model = load_word2vec(wv_model_path, bin_format=bin_format)
+    wv_model = load_word2vec(wv_model_path, binary=binary)
     embeddings = wv_model.wv.vectors
 
     if zero_start:
@@ -144,7 +144,7 @@ def build_vocab_from_word2vec(wv_model_path, save_path=None, save_embeddings=Fal
     return id2word, word2id, embeddings
 
 
-def build_vocab_from_fasttext(model_path, save_path=None, save_embeddings=False, zero_start=False):
+def build_vocab_from_fasttext(model_path, save_path=None, save_embeddings=False, zero_start=True):
     """"""
     model = load_fasttext(model_path)
     embeddings = model.wv.vectors
