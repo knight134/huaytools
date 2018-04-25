@@ -89,7 +89,7 @@ def load_stopwords(filepath, encoding="utf8"):
     return stopwords
 
 
-def remove_stopwords(tokens, stopwords, encoding='utf8'):
+def remove_stopwords(tokens, stopwords=None, encoding='utf8'):
     """remove stopwords
 
     Args:
@@ -103,6 +103,9 @@ def remove_stopwords(tokens, stopwords, encoding='utf8'):
         ['huay']
 
     """
+    if stopwords is None:
+        return tokens
+
     if isinstance(stopwords, str):
         stopwords = load_stopwords(stopwords, encoding)
     else:
