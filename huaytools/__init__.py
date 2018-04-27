@@ -1,3 +1,5 @@
+__version__ = "0.3.2"
+
 # modules
 from . import utils
 from . import crawler

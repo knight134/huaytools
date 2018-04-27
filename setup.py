@@ -5,9 +5,9 @@
 * Created Time:  2018-1-26 11:33:13
 """
 from setuptools import setup, find_packages
-import pkg_resources
+from huaytools import __version__
 
-version = "0.3.1"
+version = __version__
 
 install_requires = [
     'six',
