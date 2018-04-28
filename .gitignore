@@ -1,10 +1,10 @@
-# directory
+# folder
 .idea
 dist
 *.egg-info
 .cache
-test
 __pycache__
+test
 
 # python file
 test.py
