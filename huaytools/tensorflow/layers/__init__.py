@@ -31,7 +31,8 @@ def dense(inputs, n_units,
     logging.info("DenseLayer: %s - n_units: %d activation: %s" % (name, n_units, activation.__name__))
 
     # n_inputs = int(tf.convert_to_tensor(inputs).get_shape()[-1])
-    n_inputs = tf.convert_to_tensor(inputs).get_shape()[-1].value
+    inputs = tf.convert_to_tensor(inputs)
+    n_inputs = inputs.get_shape()[-1].value
 
     with tf.variable_scope(name, reuse=reuse):
         W = tf.get_variable('W', shape=[n_inputs, n_units], initializer=W_init, dtype=tf.float32,

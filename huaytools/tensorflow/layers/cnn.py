@@ -60,7 +60,11 @@ def conv1d(inputs, kernel_size, out_channels,
         A 2D `Tensor` with [batch_size, max_length/strides, out_channels]
 
     """
-    in_channels = tf.convert_to_tensor(inputs).get_shape()[-1].value
+    W_init_args = {} if W_init_args is None else W_init_args
+    b_init_args = {} if b_init_args is None else b_init_args
+
+    inputs = tf.convert_to_tensor(inputs)
+    in_channels = inputs.get_shape()[-1].value
 
     if isinstance(kernel_size, int):
         kernel_size = (kernel_size,)
@@ -120,7 +124,11 @@ def conv2d(inputs, kernel_size, out_channels,
     Returns:
         A 4D `Tensor` with [batch_size, height/strides[1], width/strides[2], out_channels]
     """
-    in_channels = tf.convert_to_tensor(inputs).get_shape()[-1].value
+    W_init_args = {} if W_init_args is None else W_init_args
+    b_init_args = {} if b_init_args is None else b_init_args
+
+    inputs = tf.convert_to_tensor(inputs)
+    in_channels = inputs.get_shape()[-1].value
 
     if isinstance(kernel_size, int):
         kernel_size = (kernel_size,) * 2
