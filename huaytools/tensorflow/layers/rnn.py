@@ -1,5 +1,4 @@
 """
-
 说明：
     `tf.nn.static_rnn` 中是没有 time_major 这个参数的，
         它接收的是一个 `[batch_size, n_features]` 的 2D tensor
@@ -11,8 +10,9 @@
         它默认接收的是一个 `[batch_size, max_steps, n_features]` 的 3D tensor
         因为 dynamic_rnn 出的比较晚，好多比较旧的教程都使用的是 static_rnn，
 
-    `tf.nn.rnn_cell.GRUCell`
-        注意 GRUCell 和 LSTMCell 的参数不同，所以一般需要将 cell 作为参数放到声明里，然后在外部创建 cell，
+    `LSTMCell` 与 `GRUCell`
+        虽然 GRUCell 和 LSTMCell 的调用方式相同，但是它们的参数不同，
+        因此如果需要使用不同的 cell，一般做法是将 cell 作为参数放到声明里，然后在外部创建 cell 实例；
         如果想构建通用的函数，可以参考 `tl.layers.RNNLayer` - 它传入的是一个 cell_fn
 
 References:
