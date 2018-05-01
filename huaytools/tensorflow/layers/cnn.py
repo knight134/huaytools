@@ -1,32 +1,13 @@
 """
 
 """
-
 import tensorflow as tf
-import tensorlayer as tl
 
 logging = tf.logging
 
 
-# def conv(rank, n_filter, kernel_size,
-#          padding='valid',
-#          data_format=None,
-#          kernel_init=None):
-#     """
-#
-#     Args:
-#         rank(int): The rank of the convolution, e.g. "2" for 2D convolution.
-#         n_filter(int): The dimensionality of the output space / The number of filters in the convolution.
-#         kernel_size: A tuple/list of n integers (n >= 1), specifying the size of the convolution window.
-#         padding(str): One of "valid" or "same", default is "valid"
-#         data_format(str):
-#
-#     Returns:
-#
-#     """
-
 def conv1d(inputs, kernel_size, out_channels,
-           strides=1,
+           stride=1,
            activation=tf.nn.relu,
            use_bias=True,
            padding="VALID",
@@ -44,7 +25,7 @@ def conv1d(inputs, kernel_size, out_channels,
         inputs: A 3D `Tensor` with [batch_size, max_length, in_channels]
         kernel_size:
         out_channels:
-        strides(int):
+        stride(int):
         activation: default to use `tf.nn.relu`
         use_bias(bool):
         padding(str):
@@ -70,8 +51,10 @@ def conv1d(inputs, kernel_size, out_channels,
         kernel_size = (kernel_size,)
     kernel_shape = kernel_size + (in_channels, out_channels)
 
+    assert isinstance(stride, int), "stride must be an integer."
+
     logging.info("Conv1dLayer: %s - kernel_shape: %s strides: %s padding: %s activation: %s" % (
-        name, str(kernel_shape), str(strides), padding, activation.__name__))
+        name, str(kernel_shape), str(stride), padding, activation.__name__))
 
     with tf.variable_scope(name, reuse=reuse):
         W = tf.get_variable(name='W', shape=kernel_shape, initializer=W_init, dtype=tf.float32,
@@ -81,10 +64,10 @@ def conv1d(inputs, kernel_size, out_channels,
                                 **b_init_args)
             outputs = activation(
                 tf.nn.bias_add(
-                    tf.nn.conv1d(inputs, W, strides=strides, padding=padding, data_format=data_format), b))
+                    tf.nn.conv1d(inputs, W, stride=stride, padding=padding, data_format=data_format), b))
         else:
             outputs = activation(
-                tf.nn.conv2d(inputs, W, strides=strides, padding=padding, data_format=data_format))
+                tf.nn.conv1d(inputs, W, strides=stride, padding=padding, data_format=data_format))
 
     return outputs
 
@@ -105,11 +88,11 @@ def conv2d(inputs, kernel_size, out_channels,
     2D 卷积
 
     Args:
-        inputs: A 4D `Tensor` with [batch_size, height, width, in_channels]
+        inputs: A 4D `Tensor` with shape `[batch_size, in_height, in_width, in_channels]`
         kernel_size(int or tuple): A integer or a tuple/list with (k_height, k_width)
             特别的，当应用在 NLP 中时，一般置 kernel_size=(n_gram, embedding_size)
         out_channels(int): The number of the out channels
-        strides(int or tuple): A integer or a tuple/list with length 4
+        strides: A integer or a tuple/list with length 4
         activation: default to use `tf.nn.relu`
         use_bias(bool):
         padding(str):
@@ -122,7 +105,7 @@ def conv2d(inputs, kernel_size, out_channels,
         reuse(bool):
 
     Returns:
-        A 4D `Tensor` with [batch_size, height/strides[1], width/strides[2], out_channels]
+        A 4D `Tensor` with [batch_size, in_height/strides[1], in_width/strides[2], out_channels]
     """
     W_init_args = {} if W_init_args is None else W_init_args
     b_init_args = {} if b_init_args is None else b_init_args
@@ -135,7 +118,8 @@ def conv2d(inputs, kernel_size, out_channels,
     kernel_shape = kernel_size + (in_channels, out_channels)  # [kernel_h, kernel_w, in_channels, out_channels]
 
     if isinstance(strides, int):
-        strides = (strides,) * 4
+        strides = (1,) + (strides,) * 2 + (1,)
+    assert len(strides) == 4, "strides must be an integer or a tuple of length 4"
 
     logging.info("Conv2dLayer: %s - kernel_shape: %s strides: %s padding: %s activation: %s" % (
         name, str(kernel_shape), str(strides), padding, activation.__name__))
@@ -152,5 +136,51 @@ def conv2d(inputs, kernel_size, out_channels,
         else:
             outputs = activation(
                 tf.nn.conv2d(inputs, W, strides=strides, padding=padding, data_format=data_format))
+
+    return outputs
+
+
+def conv3d(inputs, kernel_size, out_channels,
+           strides=(1, 1, 1, 1, 1),
+           activation=tf.nn.relu,
+           use_bias=True,
+           padding="VALID",
+           W_init=tf.truncated_normal_initializer(stddev=0.02),
+           W_init_args=None,
+           b_init=tf.constant_initializer(value=0.0),
+           b_init_args=None,
+           data_format="NDHWC",
+           name="conv3d",
+           reuse=None):
+    """"""
+    W_init_args = {} if W_init_args is None else W_init_args
+    b_init_args = {} if b_init_args is None else b_init_args
+
+    inputs = tf.convert_to_tensor(inputs)
+    in_channels = inputs.get_shape()[-1].value
+
+    if isinstance(kernel_size, int):
+        kernel_size = (kernel_size,) * 3
+    kernel_shape = kernel_size + (in_channels, out_channels)
+
+    if isinstance(strides, int):
+        strides = (1,) + (strides,) * 3 + (1,)
+    assert len(strides) == 5, "strides must be an integer or a tuple of length 5"
+
+    logging.info("Conv2dLayer: %s - kernel_shape: %s strides: %s padding: %s activation: %s" % (
+        name, str(kernel_shape), str(strides), padding, activation.__name__))
+
+    with tf.variable_scope(name, reuse=reuse):
+        W = tf.get_variable(name='W', shape=kernel_shape, initializer=W_init, dtype=tf.float32,
+                            **W_init_args)
+        if use_bias:
+            b = tf.get_variable(name='b', shape=kernel_shape[-1:], initializer=b_init, dtype=tf.float32,
+                                **b_init_args)
+            outputs = activation(
+                tf.nn.bias_add(
+                    tf.nn.conv3d(inputs, W, strides=strides, padding=padding, data_format=data_format), b))
+        else:
+            outputs = activation(
+                tf.nn.conv3d(inputs, W, strides=strides, padding=padding, data_format=data_format))
 
     return outputs
