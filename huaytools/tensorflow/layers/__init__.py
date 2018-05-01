@@ -4,8 +4,10 @@
 import tensorflow as tf
 import tensorlayer as tl
 
-from .cnn import *
-from .rnn import *
+# from .cnn import *
+# from .rnn import *
+from .attention import *
+from .embedding import *
 
 logging = tf.logging
 

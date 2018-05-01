@@ -44,8 +44,8 @@ def conv1d(inputs, kernel_size, out_channels,
         A 3D tensor with shape `[batch_size, max_length/strides, out_channels]`
 
     """
-    W_init_args = {} if W_init_args is None else W_init_args
-    b_init_args = {} if b_init_args is None else b_init_args
+    # W_init_args = {} if W_init_args is None else W_init_args
+    # b_init_args = {} if b_init_args is None else b_init_args
 
     inputs = tf.convert_to_tensor(inputs)
     in_channels = inputs.get_shape()[-1].value
@@ -61,10 +61,10 @@ def conv1d(inputs, kernel_size, out_channels,
 
     with tf.variable_scope(name, reuse=reuse):
         W = tf.get_variable(name='W', shape=kernel_shape, initializer=W_init, dtype=tf.float32,
-                            **W_init_args)
+                            **(W_init_args or {}))
         if use_bias:
             b = tf.get_variable(name='b', shape=kernel_shape[-1:], initializer=b_init, dtype=tf.float32,
-                                **b_init_args)
+                                **(b_init_args or {}))
             outputs = activation(
                 tf.nn.bias_add(
                     tf.nn.conv1d(inputs, W, stride=stride, padding=padding, data_format=data_format), b))
@@ -110,9 +110,6 @@ def conv2d(inputs, kernel_size, out_channels,
     Returns:
         A 4D `Tensor` with shape `[batch_size, in_height/strides[1], in_width/strides[2], out_channels]`
     """
-    W_init_args = {} if W_init_args is None else W_init_args
-    b_init_args = {} if b_init_args is None else b_init_args
-
     inputs = tf.convert_to_tensor(inputs)
     in_channels = inputs.get_shape()[-1].value
 
@@ -129,10 +126,10 @@ def conv2d(inputs, kernel_size, out_channels,
 
     with tf.variable_scope(name, reuse=reuse):
         W = tf.get_variable(name='W', shape=kernel_shape, initializer=W_init, dtype=tf.float32,
-                            **W_init_args)
+                            **(W_init_args or {}))
         if use_bias:
             b = tf.get_variable(name='b', shape=kernel_shape[-1:], initializer=b_init, dtype=tf.float32,
-                                **b_init_args)
+                                **(b_init_args or {}))
             outputs = activation(
                 tf.nn.bias_add(
                     tf.nn.conv2d(inputs, W, strides=strides, padding=padding, data_format=data_format), b))
@@ -177,9 +174,6 @@ def conv3d(inputs, kernel_size, out_channels,
     Returns:
 
     """
-    W_init_args = {} if W_init_args is None else W_init_args
-    b_init_args = {} if b_init_args is None else b_init_args
-
     inputs = tf.convert_to_tensor(inputs)
     in_channels = inputs.get_shape()[-1].value
 
@@ -196,10 +190,10 @@ def conv3d(inputs, kernel_size, out_channels,
 
     with tf.variable_scope(name, reuse=reuse):
         W = tf.get_variable(name='W', shape=kernel_shape, initializer=W_init, dtype=tf.float32,
-                            **W_init_args)
+                            **(W_init_args or {}))
         if use_bias:
             b = tf.get_variable(name='b', shape=kernel_shape[-1:], initializer=b_init, dtype=tf.float32,
-                                **b_init_args)
+                                **(b_init_args or {}))
             outputs = activation(
                 tf.nn.bias_add(
                     tf.nn.conv3d(inputs, W, strides=strides, padding=padding, data_format=data_format), b))

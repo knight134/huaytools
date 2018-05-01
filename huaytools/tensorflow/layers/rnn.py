@@ -54,15 +54,13 @@ def rnn_basic(inputs, n_units, cell_fn,
             2. outputs = tf.reshape(tf.concat(outputs, axis=1), [-1, config.hidden_size])
             2. outputs = tf.reshape(tf.concat(outputs, axis=1), [-1, n_steps, n_hidden])
     """
-    cell_init_args = {} if cell_init_args is None else cell_init_args
-
     inputs = tf.convert_to_tensor(inputs)
     batch_size = inputs.get_shape()[0].value
     max_steps = inputs.get_shape()[1].value
 
     n_steps = max_steps if n_steps > max_steps else n_steps
 
-    cell = cell_fn(n_units, reuse=reuse, **cell_init_args)
+    cell = cell_fn(n_units, reuse=reuse, **(cell_init_args or {}))
 
     if initial_state is None:
         initial_state = cell.zero_state(batch_size, dtype=tf.float32)
@@ -101,17 +99,12 @@ def lstm(inputs, n_units,
             更详细的说明 ref: `tf.nn.dynamic_rnn`
 
     """
-    if cell_init_args is None:
-        cell_init_args = {}
-    if rnn_init_args is None:
-        rnn_init_args = {}
-
-    cell = tf.nn.rnn_cell.LSTMCell(n_units, **cell_init_args)
+    cell = tf.nn.rnn_cell.LSTMCell(n_units, **(cell_init_args or {}))
 
     outputs, state = tf.nn.dynamic_rnn(cell, inputs,
                                        sequence_length=sequence_length,
                                        dtype=tf.float32,
-                                       **rnn_init_args)
+                                       **(rnn_init_args or {}))
 
     return outputs, state
 
@@ -138,16 +131,11 @@ def bi_lstm(inputs, n_units,
             `outputs = tf.concat(outputs, axis=2)` which shape `[batch_size, max_steps, n_units*2]`
 
     """
-    if cell_init_args is None:
-        cell_init_args = {}
-    if rnn_init_args is None:
-        rnn_init_args = {}
-
-    cell_fw = tf.nn.rnn_cell.LSTMCell(n_units, **cell_init_args)
-    cell_bw = tf.nn.rnn_cell.LSTMCell(n_units, **cell_init_args)
+    cell_fw = tf.nn.rnn_cell.LSTMCell(n_units, **(cell_init_args or {}))
+    cell_bw = tf.nn.rnn_cell.LSTMCell(n_units, **(cell_init_args or {}))
 
     outputs, output_states = tf.nn.bidirectional_dynamic_rnn(cell_fw, cell_bw, inputs,
                                                              sequence_length=sequence_length,
-                                                             **rnn_init_args)
+                                                             **(rnn_init_args or {}))
 
     return outputs, output_states
