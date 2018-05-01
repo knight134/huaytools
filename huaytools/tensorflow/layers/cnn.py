@@ -1,5 +1,8 @@
 """
 
+References:
+    tf.layers
+    tl.layers
 """
 import tensorflow as tf
 
@@ -22,8 +25,8 @@ def conv1d(inputs, kernel_size, out_channels,
     1D 卷积
 
     Args:
-        inputs: A 3D `Tensor` with [batch_size, max_length, in_channels]
-        kernel_size:
+        inputs: A 3D tensor with shape `[batch_size, max_length, in_channels]`
+        kernel_size: An integer or a tuple/list with one element
         out_channels:
         stride(int):
         activation: default to use `tf.nn.relu`
@@ -38,7 +41,7 @@ def conv1d(inputs, kernel_size, out_channels,
         reuse(bool):
 
     Returns:
-        A 2D `Tensor` with [batch_size, max_length/strides, out_channels]
+        A 3D tensor with shape `[batch_size, max_length/strides, out_channels]`
 
     """
     W_init_args = {} if W_init_args is None else W_init_args
@@ -88,11 +91,11 @@ def conv2d(inputs, kernel_size, out_channels,
     2D 卷积
 
     Args:
-        inputs: A 4D `Tensor` with shape `[batch_size, in_height, in_width, in_channels]`
-        kernel_size(int or tuple): A integer or a tuple/list with (k_height, k_width)
+        inputs: A 4D tensor with shape `[batch_size, in_height, in_width, in_channels]`
+        kernel_size: An integer or a tuple/list with (k_height, k_width)
             特别的，当应用在 NLP 中时，一般置 kernel_size=(n_gram, embedding_size)
         out_channels(int): The number of the out channels
-        strides: A integer or a tuple/list with length 4
+        strides: An integer or a tuple/list of length 4
         activation: default to use `tf.nn.relu`
         use_bias(bool):
         padding(str):
@@ -105,7 +108,7 @@ def conv2d(inputs, kernel_size, out_channels,
         reuse(bool):
 
     Returns:
-        A 4D `Tensor` with [batch_size, in_height/strides[1], in_width/strides[2], out_channels]
+        A 4D `Tensor` with shape `[batch_size, in_height/strides[1], in_width/strides[2], out_channels]`
     """
     W_init_args = {} if W_init_args is None else W_init_args
     b_init_args = {} if b_init_args is None else b_init_args
@@ -152,7 +155,28 @@ def conv3d(inputs, kernel_size, out_channels,
            data_format="NDHWC",
            name="conv3d",
            reuse=None):
-    """"""
+    """
+    3D 卷积
+
+    Args:
+        inputs: A 5D tensor with shape `[batch_size, in_depth, in_height, in_width, in_channels]`
+        kernel_size: An integer or a tuple/list with (k_depth, k_height, k_width)
+        out_channels:
+        strides: An integer or a tuple/list of length 5
+        activation: default to use `tf.nn.relu`
+        use_bias:
+        padding:
+        W_init:
+        W_init_args:
+        b_init:
+        b_init_args:
+        data_format:
+        name:
+        reuse:
+
+    Returns:
+
+    """
     W_init_args = {} if W_init_args is None else W_init_args
     b_init_args = {} if b_init_args is None else b_init_args
 
