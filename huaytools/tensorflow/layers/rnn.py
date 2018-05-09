@@ -95,7 +95,7 @@ def lstm(inputs, n_units,
 
     Returns:
         outputs, state
-            outputs shape `[batch_size, max_time, n_units]`
+            outputs shape `[batch_size, max_steps, n_units]`
             更详细的说明 ref: `tf.nn.dynamic_rnn`
 
     """

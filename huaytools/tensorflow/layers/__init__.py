@@ -23,6 +23,9 @@ def dense(inputs, n_units,
           reuse=None):
     """全连接层
 
+    input_shape: [batch_size, n_features]
+    output_shape: [batch_size, n_units]
+
     References:
         tf.layers.Dense
         tl.layers.DenseLayer
