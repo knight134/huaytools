@@ -1,6 +1,7 @@
 """"""
-from .mnist import load_data as load_mnist, load_data_npz as load_mnist_npz
-from .mnist_fashion import load_data as load_mnist_fashion, load_data_npz as load_mnist_fashion_npz
+from .mnist import load_data as load_mnist
+from .mnist_fashion import load_data as load_mnist_fashion
+from .imdb import load_data as load_imdb
 
 import numpy as np
 
