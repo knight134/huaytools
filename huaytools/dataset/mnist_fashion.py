@@ -3,18 +3,11 @@ import os
 import gzip
 import numpy as np
 
-SRC_PATH = r"D:\OneDrive\workspace\data\image\fashion-mnist\src"
-NPZ_PATH = r"D:\OneDrive\workspace\data\image\fashion-mnist\fashion-mnist.npz"
+SRC_PATH = r"D:\OneDrive\workspace\data\image\mnist-fashion"
+NPZ_PATH = r"D:\OneDrive\workspace\data\image\mnist-fashion\mnist-fashion.npz"
 
 
-def load_data(path=SRC_PATH):
-    """"""
-    (x_train, y_train), (x_test, y_test) = load_data_src(path)
-
-    return (x_train, y_train), (x_test, y_test)
-
-
-def load_data_src(dir_path=SRC_PATH):
+def load_data(dir_path=SRC_PATH):
     """
     从源文件加载数据
 
@@ -66,13 +59,3 @@ def load_data_npz(file_path=NPZ_PATH):
         x_train, y_train = f['x_train'], f['y_train']
         x_test, y_test = f['x_test'], f['y_test']
     return (x_train, y_train), (x_test, y_test)
-
-
-def save_to_npz(file, *args, **kwds):
-    """
-    保存到 .npz 文件
-
-    Examples:
-        save_to_npz(file, x_train=x_train, x_test=x_test, y_train=y_train, y_test=y_test)
-    """
-    np.savez_compressed(file, *args, **kwds)

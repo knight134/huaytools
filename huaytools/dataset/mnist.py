@@ -3,25 +3,18 @@ import os
 import gzip
 import numpy as np
 
-SRC_PATH = r"D:\OneDrive\workspace\data\image\mnist\src"
+SRC_PATH = r"D:\OneDrive\workspace\data\image\mnist"
 NPZ_PATH = r"D:\OneDrive\workspace\data\image\mnist\mnist.npz"
 
 
-def load_data(path=SRC_PATH):
-    """"""
-    (x_train, y_train), (x_test, y_test) = load_data_src(path)
-
-    return (x_train, y_train), (x_test, y_test)
-
-
-def load_data_src(dir_path=SRC_PATH):
+def load_data(dir_path=SRC_PATH):
     """
     从源文件加载数据
 
     下载地址：http://yann.lecun.com/exdb/mnist/
 
     Args:
-        dir_path(str):  文件所在文件夹，包括 4 个文件：
+        dir_path(str): 文件夹路径，其中包括 4 个文件：
             ['train-images-idx3-ubyte.gz',
              'train-labels-idx1-ubyte.gz',
              't10k-images-idx3-ubyte.gz',
@@ -68,11 +61,4 @@ def load_data_npz(file_path=NPZ_PATH):
     return (x_train, y_train), (x_test, y_test)
 
 
-def save_to_npz(file, *args, **kwds):
-    """
-    保存到 .npz 文件
 
-    Examples:
-        save_to_npz(file, x_train=x_train, x_test=x_test, y_train=y_train, y_test=y_test)
-    """
-    np.savez_compressed(file, *args, **kwds)
