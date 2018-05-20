@@ -33,7 +33,9 @@ def load_data(npz_path=DATA_PATH, num_words=None, skip_top=0,
             比如，原词典中 {the: 1}，但 the 实际上是 `1+index_from=4`（index_from 默认为 3）
 
     Returns:
-        Tuple of Numpy arrays: `(x_train, y_train), (x_test, y_test)`.
+        (x_train, y_train), (x_test, y_test)
+            x: array(list[1, ...], list[1, ...])
+            y: array([1, 0, ...])
 
     Raises:
         ValueError: maxlen 设置的太小，导致所有数据都被过滤了
@@ -108,3 +110,8 @@ def _remove_long_seq(maxlen, seq, label):
             new_seq.append(x)
             new_label.append(y)
     return new_seq, new_label
+
+
+if __name__ == '__main__':
+    """"""
+    (x_train, y_train), (x_test, y_test) = load_data(r"D:\OneDrive\workspace\data\nlp\imdb\imdb.npz")
