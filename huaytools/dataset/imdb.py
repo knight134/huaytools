@@ -10,39 +10,45 @@ DATA_PATH = r"D:\OneDrive\workspace\data\nlp\imdb\imdb.npz"
 WORD_PATH = r"D:\OneDrive\workspace\data\nlp\imdb\imdb_word_index.json"
 
 
-def load_data(path=DATA_PATH, num_words=None, skip_top=0,
+def load_data(npz_path=DATA_PATH, num_words=None, skip_top=0,
               maxlen=None, seed=113, start_char=1, oov_char=2, index_from=3):
     """Loads the IMDB dataset.
 
-    # Arguments
-        path: where to cache the data (relative to `~/.keras/dataset`).
-        num_words: max number of words to include. Words are ranked
-            by how often they occur (in the training set) and only
-            the most frequent words are kept
-        skip_top: skip the top N most frequently occurring words
-            (which may not be informative).
-        maxlen: sequences longer than this will be filtered out.
-        seed: random seed for sample shuffling.
-        start_char: The start of a sequence will be marked with this character.
-            Set to 1 because 0 is usually the padding character.
-        oov_char: words that were cut out because of the `num_words`
-            or `skip_top` limit will be replaced with this character.
-        index_from: index actual words with this index and higher.
+    Args:
+        npz_path(str):
+        num_words(int):
+            词表规模，按频率降序
+        skip_top(int):
+            跳过频率最高的几个词（通常是停用词）
+        maxlen(int):
+            序列最大长度，超过该长度的序列将被过滤
+        seed(int):
+            随机数种子
+        start_char(int):
+            序列开始标记，默认值为 1
+        oov_char(int):
+            如果某些词因为 num_words 或 skip_top 参数被跳过了，则用 oov_char 代替
+        index_from(int):
+            因为设置了 start_char 和 oov_char，所以真实的词需要往后顺延，默认为 3
+            比如，原词典中 {the: 1}，但 the 实际上是 `1+index_from=4`（index_from 默认为 3）
 
-    # Returns
+    Returns:
         Tuple of Numpy arrays: `(x_train, y_train), (x_test, y_test)`.
 
-    # Raises
-        ValueError: in case `maxlen` is so low
-            that no input sequence could be kept.
+    Raises:
+        ValueError: maxlen 设置的太小，导致所有数据都被过滤了
 
-    Note that the 'out of vocabulary' character is only used for
-    words that were present in the training set but are not included
-    because they're not making the `num_words` cut here.
-    Words that were not seen in the training set but are in the test set
-    have simply been skipped.
+    Notes:
+        Note that the 'out of vocabulary' character is only used for
+        words that were present in the training set but are not included
+        because they're not making the `num_words` cut here.
+        Words that were not seen in the training set but are in the test set
+        have simply been skipped.
+
+    References:
+        keras.datasets.imdb
     """
-    with np.load(path) as f:
+    with np.load(npz_path) as f:
         x_train, labels_train = f['x_train'], f['y_train']
         x_test, labels_test = f['x_test'], f['y_test']
 
@@ -88,29 +94,14 @@ def load_data(path=DATA_PATH, num_words=None, skip_top=0,
 
 
 def get_word_index(path=WORD_PATH):
-    """Retrieves the dictionary mapping word indices back to words.
-
-    # Arguments
-        path: where to cache the data (relative to `~/.keras/dataset`).
-
-    # Returns
-        The word index dictionary.
+    """获取 word2index
+        {"the": 1, "and": 2, ...}
     """
     with open(path) as f:
         return json.load(f)
 
 
 def _remove_long_seq(maxlen, seq, label):
-    """Removes sequences that exceed the maximum length.
-
-    # Arguments
-        maxlen: Int, maximum length of the output sequences.
-        seq: List of lists, where each sublist is a sequence.
-        label: List where each element is an integer.
-
-    # Returns
-        new_seq, new_label: shortened lists for `seq` and `label`.
-    """
     new_seq, new_label = [], []
     for x, y in zip(seq, label):
         if len(x) < maxlen:
