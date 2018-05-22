@@ -111,7 +111,3 @@ def _remove_long_seq(maxlen, seq, label):
             new_label.append(y)
     return new_seq, new_label
 
-
-if __name__ == '__main__':
-    """"""
-    (x_train, y_train), (x_test, y_test) = load_data(r"D:\OneDrive\workspace\data\nlp\imdb\imdb.npz")
