@@ -2,6 +2,7 @@
 from .mnist import load_data as load_mnist
 from .mnist_fashion import load_data as load_mnist_fashion
 from .imdb import load_data as load_imdb
+from .imdb import load_data_padding as load_imdb_padding
 
 import numpy as np
 

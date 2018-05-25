@@ -95,6 +95,22 @@ def load_data(npz_path=DATA_PATH, num_words=None, skip_top=0,
     return (x_train, y_train), (x_test, y_test)
 
 
+def load_data_padding(npz_path=DATA_PATH, num_words=None, maxlen=None):
+    print('Loading data...')
+    (x_train, y_train), (x_test, y_test) = load_data(npz_path=npz_path, num_words=num_words, maxlen=maxlen)
+
+    from keras.preprocessing import sequence
+    print('Pad sequences...')
+    x_train = sequence.pad_sequences(x_train, maxlen=maxlen)
+    x_test = sequence.pad_sequences(x_test, maxlen=maxlen)
+    print('x_train shape:', x_train.shape)
+    print('y_train shape:', y_train.shape)
+    print('x_test shape:', x_test.shape)
+    print('y_test shape:', y_test.shape)
+
+    return (x_train, y_train), (x_test, y_test)
+
+
 def get_word_index(path=WORD_PATH):
     """获取 word2index
         {"the": 1, "and": 2, ...}
