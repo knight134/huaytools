@@ -11,7 +11,7 @@ version = __version__
 
 install_requires = [
     'six',
-    'bs4',
+    # 'bs4',
     # 'bunch',  # add the hole bunch in, and apply it to Python3
 
     # Use Anaconda to install avoid install failed
